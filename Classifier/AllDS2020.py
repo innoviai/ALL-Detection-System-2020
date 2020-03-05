@@ -174,9 +174,42 @@ def main():
             return Response(response=resp, status=200, mimetype="application/json")
         
         @app.route('/VRInference', methods=['POST'])
-        def VRInference():
+        def VRInference(id):
+            """ Responds to requests from Oculus Rift. """
             
-            return Response(response="OK", status=200, mimetype="application/json")
+            t_drive = AllDS2020.Helpers.confs["cnn"]["data"]["test_data"]
+
+            if int(id)-1 > len(t_drive):
+                ServerResponse = jsonpickle.encode({
+                    'Response': 'FAILED',
+                    'Message': 'No testing data with provided ID'
+                })
+
+            i = int(id)-1
+
+            test_image = AllDS2020.Helpers.confs["cnn"]["data"]["test"] + "/" + t_drive[i]
+
+            if not os.path.isfile(test_image):
+                ServerResponse = jsonpickle.encode({
+                    'Response': 'FAILED',
+                    'Message': 'No testing data with filename exists'
+                })
+            
+            message = ""
+            classification = AllDS2020.Model.vr_http_classify(cv2.imread(test_image))
+            
+            if classification == 1:
+                msg = "Positive"
+            elif classification == 0:
+                message  = "Negative" 
+
+            resp = jsonpickle.encode({
+                'Response': 'OK',
+                'Message': message,
+                'Classification': classification
+            })
+
+            return Response(response=resp, status=200, mimetype="application/json")
         
         app.run(host = AllDS2020.Helpers.confs["cnn"]["api"]["server"], 
                 port = AllDS2020.Helpers.confs["cnn"]["api"]["port"])

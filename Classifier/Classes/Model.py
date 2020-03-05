@@ -422,3 +422,25 @@ class Model():
         prediction  = np.argmax(prediction)
         
         return self.Helpers.confs["cnn"]["data"]["labels"][prediction]
+
+    def vr_http_classify(self, img):
+        """ Classifies an image sent via from VR via HTTP. """
+
+        dx, dy, dz = img.shape
+        delta = float(abs(dy-dx))
+
+        if dx > dy:
+            img = img[int(0.5*delta):dx-int(0.5*delta), 0:dy]
+        else:
+            img = img[0:dx, int(0.5*delta):dy-int(0.5*delta)]
+            
+        img = cv2.resize(img, (self.Helpers.confs["cnn"]["data"]["dim_augmentation"], 
+                                self.Helpers.confs["cnn"]["data"]["dim_augmentation"]))
+        dx, dy, dz = img.shape
+        input_data = img.reshape((-1, dx, dy, dz))
+        
+        predictions = self.AllModel.predict_proba(input_data)
+        prediction = predictions[0]
+        prediction  = np.argmax(prediction)
+        
+        return self.Helpers.confs["cnn"]["data"]["labels"][prediction]

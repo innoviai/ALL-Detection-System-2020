@@ -22,7 +22,18 @@
             "seed_rmsprop_augmentation": 6,
             "split": 0.255,
             "split_augmentation": 0.3,
-            "test": "Model/Data/ALL-IDB-1/Test",
+            "test": "Model/Data/ALL-IDB-1/Test",,
+            "test_data": [
+                "Im006_1.jpg",
+                "Im035_0.jpg",
+                "Im020_1.jpg",
+                "Im041_0.jpg",
+                "Im024_1.jpg",
+                "Im099_0.jpg",
+                "Im026_1.jpg",
+                "Im095_0.jpg",
+                "Im031_1.jpg"
+            ],
             "train_dir": "Model/Data/ALL-IDB-1",
             "valid_types": [
               ".JPG",
