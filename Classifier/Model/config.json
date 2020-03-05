@@ -1,7 +1,7 @@
 {
     "cnn": {
         "api": {
-            "server": "192.168.1.34",
+            "server": "XXX.XXX.X.XXX",
             "port": 1234
         },
         "model": {

@@ -145,7 +145,8 @@ Our functionality for this network can be found mainly in the **Classes** direct
 {
     "cnn": {
         "api": {
-            "server": "Model/model.js"
+            "server": "XXX.XXX.X.XXX",
+            "port": 1234
         },
         "model": {
             "model": "Model/model.json",
