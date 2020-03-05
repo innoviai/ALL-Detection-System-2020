@@ -13,6 +13,7 @@
 #
 ############################################################################################
 
+import jsonpickle
 import sys
 
 from flask import Flask, request, Response
@@ -81,12 +82,28 @@ class AllDS2020():
         self.Model.confusion_matrix()
         self.Model.figures_of_merit()
         
+    def do_create_model(self):
+        """ Loads the model """
+        
+        self.Model = Model(self.optimizer, self.do_augmentation)
+        
+    def do_load_model(self):
+        """ Loads the model """
+        
+        self.Model.load_model_and_weights()
+        
     def do_classify(self):
         """ Loads model and classifies test data """
         
-        self.Model = Model(self.optimizer, self.do_augmentation)
-        self.Model.load_model_and_weights()
+        self.do_create_model()
+        self.do_load_model()
         self.Model.test_classifier()
+        
+    def do_http_classify(self):
+        """ Loads model and classifies test data """
+        
+        self.do_create_model()
+        self.Model.test_http_classifier()
 
 AllDS2020 = AllDS2020()
 
@@ -100,7 +117,7 @@ def main():
         print("Optimizer not supported")
         exit()
         
-    if sys.argv[1] == "Server" or sys.argv[1] == "Train" or sys.argv[1] == "Classify":
+    if  sys.argv[1] == "Train" or sys.argv[1] == "Server" or sys.argv[1] == "Client" or sys.argv[1] == "Classify":
         AllDS2020.mode = sys.argv[1]
     else:
         print("Mode not supported! Server, Train or Classify")
@@ -132,16 +149,45 @@ def main():
         Runs the classifier in server mode and provides 
         an endpoint, exposing the classifier."""
         
+        AllDS2020.do_create_model()
+        AllDS2020.do_load_model()
+        
         app = Flask(__name__)
-
         @app.route('/Inference', methods=['POST'])
         def Inference():
+            """ Responds to standard HTTP request. """
+            
+            message = ""
+            classification = AllDS2020.Model.http_classify(request)
+            
+            if classification == 1:
+                msg = "Positive"
+            elif classification == 0:
+                message  = "Negative" 
+
+            resp = jsonpickle.encode({
+                'Response': 'OK',
+                'Message': message,
+                'Classification': classification
+            })
+
+            return Response(response=resp, status=200, mimetype="application/json")
+        
+        @app.route('/VRInference', methods=['POST'])
+        def VRInference():
             
             return Response(response="OK", status=200, mimetype="application/json")
         
-        print("Not implemented")
-        exit()
-
+        app.run(host = AllDS2020.Helpers.confs["cnn"]["api"]["server"], 
+                port = AllDS2020.Helpers.confs["cnn"]["api"]["port"])
+        
+    elif AllDS2020.mode == "Client":
+        """ Runs the classifier in client mode
+        
+        Runs the classifier in client mode allowing you to classify the 
+        test data via HTTP POST requests."""
+        
+        AllDS2020.do_http_classify()
 
 if __name__ == "__main__":
     main()
