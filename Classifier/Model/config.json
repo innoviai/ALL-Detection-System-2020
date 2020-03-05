@@ -1,17 +1,50 @@
 {
     "cnn": {
+        "api": {
+            "server": "XXX.XXX.X.XXX",
+            "port": 1234
+        },
+        "model": {
+            "model": "Model/model.json",
+            "model_aug": "Model/model_augmentation.json",
+            "weights": "Model/weights.h5",
+            "weights_aug": "Model/weights_augmentation.h5"
+        },
         "data": {
             "dim": 50,
             "dim_augmentation": 100,
             "file_type": ".jpg",
-            "rotations_augmentation": 3,
+            "labels": [0,1],
+            "rotations_augmentation": 5,
             "seed_adam": 32,
-            "seed_adam_augmentation": 64,
+            "seed_adam_augmentation": 32,
             "seed_rmsprop": 3,
             "seed_rmsprop_augmentation": 6,
             "split": 0.255,
             "split_augmentation": 0.3,
-            "train_dir": "Model/Data/ALL-IDB-1"
+            "test": "Model/Data/ALL-IDB-1/Test",,
+            "test_data": [
+                "Im006_1.jpg",
+                "Im035_0.jpg",
+                "Im020_1.jpg",
+                "Im041_0.jpg",
+                "Im024_1.jpg",
+                "Im099_0.jpg",
+                "Im026_1.jpg",
+                "Im095_0.jpg",
+                "Im031_1.jpg"
+            ],
+            "train_dir": "Model/Data/ALL-IDB-1",
+            "valid_types": [
+              ".JPG",
+              ".JPEG",
+              ".PNG",
+              ".GIF",
+              ".jpg",
+              ".jpeg",
+              ".png",
+              ".gif"
+            ]
         },
         "train": {
             "batch": 80,
