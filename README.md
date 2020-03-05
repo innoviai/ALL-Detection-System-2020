@@ -32,7 +32,7 @@ sh Setup.sh
 
 ## Clone the repository
 
-First of all you should clone the [ALL-IDB Classifiers](https://github.com/AMLResearchProject/ALL-Detection-System-2020 "ALL-IDB Classifiers") repository from the [Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research Project](hhttps://github.com/AMLResearchProject "Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research Project") Github Organization. 
+First of all you should clone the [ALL-Detection-System-2020](https://github.com/AMLResearchProject/ALL-Detection-System-2020 "ALL-Detection-System-2020") repository from the [Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research Project](hhttps://github.com/AMLResearchProject "Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research Project") Github Organization. 
 
 To do this, make sure you have Git installed, navigate to the location you want to clone the repository to on your device using terminal/commandline, and then use the following command:
 
