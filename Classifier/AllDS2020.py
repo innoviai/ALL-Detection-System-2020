@@ -85,21 +85,19 @@ AllDS2020 = AllDS2020()
 
 
 def main():
-        
-    if sys.argv[1] == 'S':
-        AllDS2020.mode = "Server"
-    elif sys.argv[1] == 'L':
-        AllDS2020.mode = "Local"
-    else:
-        print("Mode not supported")
-        exit()
     
-    if sys.argv[2] == "Adam":
-        AllDS2020.optimizer = "adam"
-    elif sys.argv[2] == "RMSprop":
-        AllDS2020.optimizer = "rmsprop"
+    server = sys.argv[2].lower()
+    
+    if server == "adam" or server == "rmsprop":
+        AllDS2020.optimizer = server
     else:
         print("Optimizer not supported")
+        exit()
+        
+    if sys.argv[1] == "Server" or sys.argv[1] == "Train" or sys.argv[1] == "Classify":
+        AllDS2020.mode = sys.argv[1]
+    else:
+        print("Mode not supported! Server, Train or Classify")
         exit()
         
     if sys.argv[3] == 'True':
@@ -108,9 +106,30 @@ def main():
         AllDS2020.do_augmentation = False
         
     AllDS2020.do_data()
-    AllDS2020.do_model()
-    AllDS2020.do_evaluate()
-    AllDS2020.do_metrics()
+        
+    if AllDS2020.mode == "Train":
+        """ Creates and trains the classifier """
+        
+        AllDS2020.do_model()
+        AllDS2020.do_evaluate()
+        AllDS2020.do_metrics()
+        
+    if AllDS2020.mode == "Server":
+        """ Runs the classifier in server mode
+        
+        Runs the classifier in server mode and provides 
+        an endpoint, exposing the classifier."""
+        
+        print("Not implemented")
+        exit()
+        
+    if AllDS2020.mode == "Classify":
+        """ Runs the classifier locally
+        
+        Runs the classifier in local mode."""
+        
+        print("Not implemented")
+        exit()
 
 
 if __name__ == "__main__":
