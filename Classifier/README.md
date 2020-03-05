@@ -28,24 +28,6 @@ _Fig 1. Proposed architecture ([Source](https://airccj.org/CSCP/vol7/csit77505.p
 
 In [Acute Leukemia Classification Using Convolution Neural Network In Clinical Decision Support System](https://airccj.org/CSCP/vol7/csit77505.pdf "Acute Leukemia Classification Using Convolution Neural Network In Clinical Decision Support System"), the authors propose a simple 5 layer Convolutional Neural Network. 
 
-> "In this work, we proposed a network contains 4 layers. The first 3 layers for detecting features
-> and the other two layers (Fully connected and Softmax) are for classifying the features. The input
-> image has the size [50x50x3]. The receptive field (or the filter size) is 5x5. The stride is 1 then we move the filters one pixel at a time. The zero-padding is 2. It will allow us to control the spatial
-> size of the output image (we will use it to exactly preserve the spatial size of the input volume so
-> the input and output width and height are the same). During the experiment, we found that in our
-> case, altering the size of original image during the convolution lead to decrease the accuracy
-> about 40%. Thus the output image after convolution layer 1 has the same size with the input
-> image."
-
-> "The convolution layer 2 has the same structure with the convolution layer 1. The filter size is 5x5,
-> the stride is 1 and the zero-padding is 2. The number of feature maps (the channel or the depth) in
-> our case is 30. If the number of feature maps is lower or higher than 30, the accuracy will
-> decrease 50%. By experiment, we found the accuracy also decrease 50% if we remove
-> Convolution layer 2.""
-
-> "The Max-Pooling layer 25x25 has Filter size is 2 and stride is 2. The fully connected layer has 2
-> neural. Finally, we use the Softmax layer for the classification. "
-
 In this project we will use an augmented dataset with the network proposed in this paper, built using Tensorflow 2.
 
 We will build a Convolutional Neural Network, as shown in Fig 1, consisting of the following 5 layers (missing out the zero padding layers):
@@ -145,7 +127,8 @@ Our functionality for this network can be found mainly in the **Classes** direct
 {
     "cnn": {
         "api": {
-            "server": "Model/model.js"
+            "server": "XXX.XXX.X.XXX",
+            "port": 1234
         },
         "model": {
             "model": "Model/model.json",
@@ -341,11 +324,11 @@ _Fig 6. Ubuntu/GTX 1050 ti AUC_
 
 &nbsp;
 
-# Live Testing
+# Local Testing
 
-Now we will use the test data to see how the classifier reacts to our testing data. Real world testing, as I like to call it, is the most crucial testing I believe, as it allows you to see the model in a real world environment. 
+Now we will use the test data to see how the classifier reacts to our testing data. Real world testing is the most important testing, as it allows you to see the how the model performs in a real world environment. 
 
-This part of the system will use the test data from the **Model/Data/Test** directory. The command to start testing locally is as follows:
+This part of the system will use the test data from the **Model/Data/ALL-IDB-1/Test** directory. The command to start testing locally is as follows:
 
 ```
 python3 AllDS2020.py Classify Adam  True
@@ -399,6 +382,96 @@ python3 AllDS2020.py Classify Adam  True
 2020-03-05 20:56:19,145 - Model - INFO - False Positives: 2
 2020-03-05 20:56:19,145 - Model - INFO - True Negatives: 8
 2020-03-05 20:56:19,145 - Model - INFO - False Negatives: 1
+```
+
+&nbsp;
+
+# Server Testing
+
+Now we will use the test data to see how the server classifier reacts.
+
+This part of the system will use the test data from the **Model/Data/ALL-IDB-1/Test** directory. 
+
+You need to open two terminal windows or tabs, in the first, use the following command to start the server:
+
+```
+python3 AllDS2020.py Server Adam  True
+```
+
+In your second terminal, use the following command:
+
+```
+python3 AllDS2020.py Client Adam  True
+```
+
+## Output/Results
+
+```
+2020-03-05 23:44:00,128 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im060_1.jpg
+2020-03-05 23:44:01,199 - Model - INFO - ALL correctly detected (True Positive)
+
+2020-03-05 23:44:08,206 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im047_0.jpg
+2020-03-05 23:44:08,555 - Model - INFO - ALL correctly not detected (True Negative)
+
+2020-03-05 23:44:15,562 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im057_1.jpg
+2020-03-05 23:44:15,908 - Model - INFO - ALL correctly detected (True Positive)
+
+2020-03-05 23:44:22,910 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im026_1.jpg
+2020-03-05 23:44:23,067 - Model - INFO - ALL correctly detected (True Positive)
+
+2020-03-05 23:44:30,074 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im041_0.jpg
+2020-03-05 23:44:30,405 - Model - INFO - ALL correctly not detected (True Negative)
+
+2020-03-05 23:44:37,411 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im020_1.jpg
+2020-03-05 23:44:37,602 - Model - INFO - ALL correctly detected (True Positive)
+
+2020-03-05 23:44:44,610 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im053_1.jpg
+2020-03-05 23:44:44,958 - Model - INFO - ALL correctly detected (True Positive)
+
+2020-03-05 23:44:51,965 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im101_0.jpg
+2020-03-05 23:44:52,339 - Model - INFO - ALL correctly not detected (True Negative)
+
+2020-03-05 23:44:59,346 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im028_1.jpg
+2020-03-05 23:44:59,534 - Model - INFO - ALL correctly detected (True Positive)
+
+2020-03-05 23:45:06,538 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im069_0.jpg
+2020-03-05 23:45:06,898 - Model - INFO - ALL correctly not detected (True Negative)
+
+2020-03-05 23:45:13,902 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im095_0.jpg
+2020-03-05 23:45:14,260 - Model - INFO - ALL incorrectly detected (False Positive)
+
+2020-03-05 23:45:21,266 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im024_1.jpg
+2020-03-05 23:45:21,427 - Model - INFO - ALL correctly detected (True Positive)
+
+2020-03-05 23:45:28,435 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im088_0.jpg
+2020-03-05 23:45:28,815 - Model - INFO - ALL incorrectly detected (False Positive)
+
+2020-03-05 23:45:35,822 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im035_0.jpg
+2020-03-05 23:45:36,165 - Model - INFO - ALL correctly not detected (True Negative)
+
+2020-03-05 23:45:43,173 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im006_1.jpg
+2020-03-05 23:45:43,336 - Model - INFO - ALL correctly detected (True Positive)
+
+2020-03-05 23:45:50,342 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im074_0.jpg
+2020-03-05 23:45:50,673 - Model - INFO - ALL incorrectly detected (False Positive)
+
+2020-03-05 23:45:57,678 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im099_0.jpg
+2020-03-05 23:45:58,062 - Model - INFO - ALL correctly not detected (True Negative)
+
+2020-03-05 23:46:05,066 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im063_1.jpg
+2020-03-05 23:46:05,401 - Model - INFO - ALL correctly detected (True Positive)
+
+2020-03-05 23:46:12,404 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im106_0.jpg
+2020-03-05 23:46:12,734 - Model - INFO - ALL correctly not detected (True Negative)
+
+2020-03-05 23:46:19,738 - Model - INFO - Sending request for: Model/Data/ALL-IDB-1/Test/Im031_1.jpg
+2020-03-05 23:46:19,932 - Model - INFO - ALL incorrectly not detected (False Negative)
+
+2020-03-05 23:46:26,938 - Model - INFO - Images Classifier: 20
+2020-03-05 23:46:26,938 - Model - INFO - True Positives: 9
+2020-03-05 23:46:26,939 - Model - INFO - False Positives: 3
+2020-03-05 23:46:26,939 - Model - INFO - True Negatives: 7
+2020-03-05 23:46:26,939 - Model - INFO - False Negatives: 1
 ```
 
 # Contributing

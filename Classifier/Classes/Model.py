@@ -18,6 +18,8 @@ import cv2
 import json
 import os
 import random
+import requests
+import time
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -42,6 +44,8 @@ class Model():
         self.Helpers = Helpers("Model", False)
         self.optimizer = optimizer
         self.do_augmentation = do_augmentation
+        self.testing_dir = self.Helpers.confs["cnn"]["data"]["test"]
+        self.valid = self.Helpers.confs["cnn"]["data"]["valid_types"]
         
         self.colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
         
@@ -280,14 +284,12 @@ class Model():
         fp = 0
         tn = 0
         fn = 0
-
-        rootdir = self.Helpers.confs["cnn"]["data"]["test"]
         
-        for testFile in os.listdir(rootdir):
-            if os.path.splitext(testFile)[1] in self.Helpers.confs["cnn"]["data"]["valid_types"]:
+        for testFile in os.listdir(self.testing_dir):
+            if os.path.splitext(testFile)[1] in self.valid:
 
                 files += 1
-                fileName = rootdir + "/" + testFile
+                fileName = self.testing_dir + "/" + testFile
 
                 img = cv2.imread(fileName).astype(np.float32)
                 self.Helpers.logger.info("Loaded test image " + fileName)
@@ -330,3 +332,115 @@ class Model():
         self.Helpers.logger.info("False Positives: " + str(fp))
         self.Helpers.logger.info("True Negatives: " + str(tn))
         self.Helpers.logger.info("False Negatives: " + str(fn))
+
+    def send_request(self, img_path):
+        """ Sends image to the inference API endpoint. """
+
+        self.Helpers.logger.info("Sending request for: " + img_path)
+        
+        _, img_encoded = cv2.imencode('.png', cv2.imread(img_path))
+        response = requests.post(
+            self.addr, data=img_encoded.tostring(), headers=self.headers)
+        response = json.loads(response.text)
+        
+        return response
+
+    def test_http_classifier(self):
+        """ Tests the trained model via HTTP. """
+        
+        msg = ""
+        result = ""
+        
+        files = 0
+        tp = 0
+        fp = 0
+        tn = 0
+        fn = 0
+
+        self.addr = "http://" + self.Helpers.confs["cnn"]["api"]["server"] + \
+            ':'+str(self.Helpers.confs["cnn"]["api"]["port"]) + '/Inference'
+        self.headers = {'content-type': 'image/jpeg'}
+
+        for data in os.listdir(self.testing_dir):
+            if os.path.splitext(data)[1] in self.valid:
+                
+                response = self.send_request(self.testing_dir + "/" + data)
+                
+                msg = ""
+                if response["Classification"] == 1 and "_1." in data:
+                    tp += 1
+                    msg = "ALL correctly detected (True Positive)"
+                elif response["Classification"] == 1 and "_0." in data:
+                    fp += 1
+                    msg = "ALL incorrectly detected (False Positive)"
+                elif response["Classification"] == 0 and "_0." in data:
+                    tn += 1
+                    msg = "ALL correctly not detected (True Negative)"
+                elif response["Classification"] == 0 and "_1." in data:
+                    fn += 1
+                    msg = "ALL incorrectly not detected (False Negative)"
+                
+                files += 1
+                
+                self.Helpers.logger.info(msg)
+                print()
+                time.sleep(7)
+                    
+        self.Helpers.logger.info("Images Classifier: " + str(files))
+        self.Helpers.logger.info("True Positives: " + str(tp))
+        self.Helpers.logger.info("False Positives: " + str(fp))
+        self.Helpers.logger.info("True Negatives: " + str(tn))
+        self.Helpers.logger.info("False Negatives: " + str(fn))
+
+    def http_classify(self, req):
+        """ Classifies an image sent via HTTP. """
+            
+        if len(req.files) != 0:
+            print("image read")
+            img = np.fromstring(req.files['file'].read(), np.uint8)
+        else:
+            print("image data")
+            img = np.fromstring(req.data, np.uint8)
+            
+        img = cv2.imdecode(img, cv2.IMREAD_UNCHANGED)
+
+        dx, dy, dz = img.shape
+        delta = float(abs(dy-dx))
+
+        if dx > dy:
+            img = img[int(0.5*delta):dx-int(0.5*delta), 0:dy]
+        else:
+            img = img[0:dx, int(0.5*delta):dy-int(0.5*delta)]
+            
+        img = cv2.resize(img, (self.Helpers.confs["cnn"]["data"]["dim_augmentation"], 
+                                self.Helpers.confs["cnn"]["data"]["dim_augmentation"]))
+        dx, dy, dz = img.shape
+        input_data = img.reshape((-1, dx, dy, dz))
+        
+        predictions = self.AllModel.predict_proba(input_data)
+        prediction = predictions[0]
+        prediction  = np.argmax(prediction)
+        
+        return self.Helpers.confs["cnn"]["data"]["labels"][prediction]
+
+    def vr_http_classify(self, img):
+        """ Classifies an image sent via from VR via HTTP. """
+
+        dx, dy, dz = img.shape
+        delta = float(abs(dy-dx))
+
+        if dx > dy:
+            img = img[int(0.5*delta):dx-int(0.5*delta), 0:dy]
+        else:
+            img = img[0:dx, int(0.5*delta):dy-int(0.5*delta)]
+            
+        img = cv2.resize(img, (self.Helpers.confs["cnn"]["data"]["dim_augmentation"], 
+                                self.Helpers.confs["cnn"]["data"]["dim_augmentation"]))
+        dx, dy, dz = img.shape
+        input_data = img.reshape((-1, dx, dy, dz))
+        
+        predictions = self.AllModel.predict_proba(input_data)
+        prediction = predictions[0]
+        prediction  = np.argmax(prediction)
+        
+        return self.Helpers.confs["cnn"]["data"]["labels"][prediction]
