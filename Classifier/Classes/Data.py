@@ -7,8 +7,8 @@
 # Author:        Adam Milton-Barker (AdamMiltonBarker.com)
 # Contributors:
 # Title:         Data Helper Class
-# Description:   Data helper functions for data augmentation used with the
-#                ALL Detection System 2020 (AllDS2020) ALL Classifier.
+# Description:   Data helper functions for the LL Detection System 2020 (AllDS2020) 
+#                ALL Classifier.
 # License:       MIT License
 # Last Modified: 2020-03-05
 #
@@ -46,8 +46,9 @@ class Data():
 
         self.Helpers = Helpers("Data", False)
         self.optimizer = optimizer
+        self.do_augmentation = do_augmentation
         
-        if do_augmentation == False:
+        if self.do_augmentation == False:
             self.seed = self.Helpers.confs["cnn"]["data"]["seed_" + self.optimizer]
             self.dim = self.Helpers.confs["cnn"]["data"]["dim"]
         else:
