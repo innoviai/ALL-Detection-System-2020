@@ -2,7 +2,7 @@
 
 ## Acute Lymphoblastic Leukemia Detection System 2020
 
-[![UPCOMING RELEASE](https://img.shields.io/badge/UPCOMING%20RELEASE-0.0.1-blue.svg)](https://github.com/AMLResearchProject/ALL-Detection-System-2020/tree/0.0.1)
+[![UPCOMING RELEASE](https://img.shields.io/badge/CURRENT%20DEV-0.0.1-blue.svg)](https://github.com/AMLResearchProject/ALL-Detection-System-2020/tree/0.0.1)
 
 ![Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research Project](Media/Images/AllVrCNN.jpg)
 
@@ -30,6 +30,18 @@ All other requirements should be included in Setup.sh you can run this file by n
 sh Setup.sh
 ```
 
+## Clone the repository
+
+First of all you should clone the [ALL-Detection-System-2020](https://github.com/AMLResearchProject/ALL-Detection-System-2020 "ALL-Detection-System-2020") repository from the [Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research Project](hhttps://github.com/AMLResearchProject "Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research Project") Github Organization. 
+
+To do this, make sure you have Git installed, navigate to the location you want to clone the repository to on your device using terminal/commandline, and then use the following command:
+
+```
+  $ git clone https://github.com/AMLResearchProject/ALL-Detection-System-2020.git
+```
+
+Once you have used the command above you will see a directory called **ALL-Detection-System-2020** in the location you chose to clone to. In terminal, navigate to the **ALL-Detection-System-2020** directory, this is your project root directory.
+
 ## ALL-IDB
 
 You need to be granted access to use the Acute Lymphoblastic Leukemia Image Database for Image Processing dataset. You can find the application form and information about getting access to the dataset on [this page](https://homes.di.unimi.it/scotti/all/#download) as well as information on how to contribute back to the project [here](https://homes.di.unimi.it/scotti/all/results.php). If you are not able to obtain a copy of the dataset please feel free to try this tutorial on your own dataset, we would be very happy to find additional AML & ALL datasets.
@@ -44,13 +56,14 @@ In this project, [ALL-IDB1](https://homes.di.unimi.it/scotti/all/#datasets) is u
 
 # Build Your Acute Lymphoblastic Leukemia Detection System 2020
 
-Follow the guides below to build your Virtual Reality Acute Lymphoblastic Leukemia Detection System.
+Follow the guides below to build your Virtual Reality Acute Lymphoblastic Leukemia Detection System. The classifiers can be used as standalone if required, but this project focuses on the system as a whole.
 
 | Project                                                                                                                                                                                                                                                                                                                                                                      | Description                                                                                                                         | Status      |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | [Tensorflow 2.0 Classifier](https://github.com/AMLResearchProject/ALL-Detection-System-2020/tree/master/Classifier "Tensorflow 2.0 Classifier") | Applies filters to the original dataset and increases the amount of training / test data. Provides code for training a CNN for detecting ALL. Hosts a REST API endpoint that provides access to the model for inference. | Development    |
-| [Chatbot](https://github.com/AMLResearchProject/ALL-Detection-System-2020/tree/master/Chatbot "Chatbot")                                                                                                                                                                                                                                                             | Hosts a REST API with access to the Natural Language Understanding Engine trained with basic knowledge of AML.                      | Development    |
+| [Arduino IoT Alarm](https://github.com/AMLResearchProject/ALL-Detection-System-2020/tree/master/Arduino-IoT "Arduino IoT Alarm")                                                                                                                                                                                                                                                             | A virtual room made with Unreal Engine 4. In the room the ALL data is displayed as blocks and the user can point at those blocks to classify the image.                      | Development    |
 | [Virtual Reality (Oculus Rift)](https://github.com/AMLResearchProject/ALL-Detection-System-2020/tree/master/Virtual-Reality "Oculus Rift")                                                                                                                                                                                                                                                             | A virtual room made with Unreal Engine 4. In the room the ALL data is displayed as blocks and the user can point at those blocks to classify the image.                      | Development    |
+| [Chatbot](https://github.com/AMLResearchProject/ALL-Detection-System-2020/tree/master/Chatbot "Chatbot")                                                                                                                                                                                                                                                             | Hosts a REST API with access to the Natural Language Understanding Engine trained with basic knowledge of AML.                      | Development    |
 
 &nbsp;
 
@@ -64,7 +77,7 @@ Please read the [CONTRIBUTING](https://github.com/AMLResearchProject/ALL-Detecti
 
 ## Contributors
 
-- [Adam Milton-Barker](https://www.leukemiaresearchassociation.ai/ "Adam Milton-Barker") - [Peter Moss Leukemia AI Research](https://www.leukemiaresearchassociation.ai "Peter Moss Leukemia AI Researchr") & Intel Software Innovator, Barcelona, Spain
+- [Adam Milton-Barker](https://www.leukemiaresearchassociation.ai/ "Adam Milton-Barker") - [Peter Moss Leukemia AI Research](https://www.leukemiaresearchassociation.ai "Peter Moss Leukemia AI Research") & Intel Software Innovator, Sabadell, Spain
 
 &nbsp;
 

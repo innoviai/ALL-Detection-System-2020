@@ -4,7 +4,7 @@
             "dim": 50,
             "dim_augmentation": 100,
             "file_type": ".jpg",
-            "rotations_augmentation": 3,
+            "rotations_augmentation": 25,
             "seed_adam": 32,
             "seed_adam_augmentation": 64,
             "seed_rmsprop": 3,
