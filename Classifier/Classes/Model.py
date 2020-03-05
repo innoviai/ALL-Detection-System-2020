@@ -14,9 +14,14 @@
 #
 ############################################################################################
 
+import cv2
+import json
+import os
 import random
-import tensorflow as tf
+
 import matplotlib.pyplot as plt
+import numpy as np
+import tensorflow as tf
 
 from numpy.random import seed
 from tensorflow.keras import layers, models
@@ -31,34 +36,23 @@ class Model():
     Model helper class for the Paper 1 Evaluation.
     """
 
-    def __init__(self, X_train,  X_test, y_train, 
-                 y_test, optimizer, do_augmentation = False):
+    def __init__(self, optimizer, do_augmentation = False):
         """ Initializes the Model class. """
 
         self.Helpers = Helpers("Model", False)
         self.optimizer = optimizer
+        self.do_augmentation = do_augmentation
         
         self.colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
         
-        self.X_train = X_train
-        self.X_test = X_test
-        self.y_train = y_train
-        self.y_test = y_test
-        
-        if do_augmentation == False:
+        if self.do_augmentation == False:
             self.seed = self.Helpers.confs["cnn"]["data"]["seed_" + self.optimizer]
-            self.val_steps = self.Helpers.confs["cnn"]["train"]["val_steps"]
-            self.batch_size = self.Helpers.confs["cnn"]["train"]["batch"] 
-            self.epochs = self.Helpers.confs["cnn"]["train"]["epochs"]
-            self.weights_file = "Model/weights.h5"
-            self.model_json = "Model/model.json"
+            self.weights_file = self.Helpers.confs["cnn"]["model"]["weights"]
+            self.model_json = self.Helpers.confs["cnn"]["model"]["model"]
         else:
             self.seed = self.Helpers.confs["cnn"]["data"]["seed_" + self.optimizer + "_augmentation"]
-            self.val_steps = self.Helpers.confs["cnn"]["train"]["val_steps_augmentation"]
-            self.batch_size = self.Helpers.confs["cnn"]["train"]["batch_augmentation"] 
-            self.epochs = self.Helpers.confs["cnn"]["train"]["epochs_augmentation"]
-            self.weights_file = "Model/weights_augmentation.h5"
-            self.model_json = "Model/model_augmentation.json"
+            self.weights_file = self.Helpers.confs["cnn"]["model"]["weights_aug"]
+            self.model_json = self.Helpers.confs["cnn"]["model"]["model_aug"]
             
         random.seed(self.seed)
         seed(self.seed)
@@ -66,8 +60,8 @@ class Model():
             
         self.Helpers.logger.info("Model class initialization complete.")
 
-    def build_network(self):
-        """ Creates the Paper 1 Evaluation network. 
+    def build_network(self, X_train,  X_test, y_train, y_test):
+        """ Builds the network. 
         
         Replicates the networked outlined in the  Acute Leukemia Classification 
         Using Convolution Neural Network In Clinical Decision Support System paper
@@ -75,6 +69,20 @@ class Model():
 
         https://airccj.org/CSCP/vol7/csit77505.pdf
         """
+        
+        if self.do_augmentation == False:
+            self.val_steps = self.Helpers.confs["cnn"]["train"]["val_steps"]
+            self.batch_size = self.Helpers.confs["cnn"]["train"]["batch"] 
+            self.epochs = self.Helpers.confs["cnn"]["train"]["epochs"]
+        else:
+            self.val_steps = self.Helpers.confs["cnn"]["train"]["val_steps_augmentation"]
+            self.batch_size = self.Helpers.confs["cnn"]["train"]["batch_augmentation"] 
+            self.epochs = self.Helpers.confs["cnn"]["train"]["epochs_augmentation"]
+        
+        self.X_train = X_train
+        self.X_test = X_test
+        self.y_train = y_train
+        self.y_test = y_test
 
         self.model = tf.keras.models.Sequential([
             tf.keras.layers.ZeroPadding2D(
@@ -138,29 +146,54 @@ class Model():
             self.Helpers.logger.info("Metrics: " + name + " " + str(value))
         print()
         
-    def plot_metrics(self):
-        """ Plots our metrics. 
+    def visualize_metrics(self):
+        """ Visualize our metrics. """
         
-        https://www.tensorflow.org/tutorials/structured_data/imbalanced_data
-        """
-                
-        metrics =  ['acc', 'loss', 'auc', 'precision', 'recall']
-        for n, metric in enumerate(metrics):
-            name = metric.replace("_"," ").capitalize()
-            plt.subplot(2,3,n+1)
-            plt.plot(self.history.epoch,  self.history.history[metric], color=self.colors[0], label='Train')
-            plt.plot(self.history.epoch, self.history.history['val_'+metric],
-                    color=self.colors[0], linestyle="--", label='Val')
-            plt.xlabel('Epoch')
-            plt.ylabel(name)
-            if metric == 'loss':
-                plt.ylim([0, plt.ylim()[1]])
-            elif metric == 'auc':
-                plt.ylim([0.8,1])
-            else:
-                plt.ylim([0,1])
-
-            plt.legend()
+        plt.plot(self.history.history['acc'])
+        plt.plot(self.history.history['val_acc'])
+        plt.title('Model Accuracy')
+        plt.ylabel('Accuracy')
+        plt.xlabel('Epoch')
+        plt.ylim((0, 1))
+        plt.legend(['Train', 'Validate'], loc='upper left')
+        plt.savefig('Model/Plots/Accuracy.png')
+        plt.show()
+        
+        plt.plot(self.history.history['loss'])
+        plt.plot(self.history.history['val_loss'])
+        plt.title('Model Loss')
+        plt.ylabel('loss')
+        plt.xlabel('Epoch')
+        plt.legend(['Train', 'Validate'], loc='upper left')
+        plt.savefig('Model/Plots/Loss.png')
+        plt.show()
+        
+        plt.plot(self.history.history['auc'])
+        plt.plot(self.history.history['val_auc'])
+        plt.title('Model AUC')
+        plt.ylabel('AUC')
+        plt.xlabel('Epoch')
+        plt.legend(['Train', 'Validate'], loc='upper left')
+        plt.savefig('Model/Plots/AUC.png')
+        plt.show()
+        
+        plt.plot(self.history.history['precision'])
+        plt.plot(self.history.history['val_precision'])
+        plt.title('Model Precision')
+        plt.ylabel('Precision')
+        plt.xlabel('Epoch')
+        plt.legend(['Train', 'Validate'], loc='upper left')
+        plt.savefig('Model/Plots/Precision.png')
+        plt.show()
+        
+        plt.plot(self.history.history['recall'])
+        plt.plot(self.history.history['val_recall'])
+        plt.title('Model Recall')
+        plt.ylabel('Recall')
+        plt.xlabel('Epoch')
+        plt.legend(['Train', 'Validate'], loc='upper left')
+        plt.savefig('Model/Plots/Recall.png')
+        plt.show()
         
     def confusion_matrix(self):
         """ Prints/displays the confusion matrix. """
@@ -178,6 +211,7 @@ class Model():
         plt.yticks([], [])
         plt.title('Confusion matrix ')
         plt.colorbar()
+        plt.savefig('Model/Plots/Confusion-Matrix.png')
         plt.show()
             
     def figures_of_merit(self):
@@ -198,37 +232,101 @@ class Model():
         FNP = (FN * 100)/test_len
         TNP = (TN * 100)/test_len
         
+        specificity = TN/(TN+FP) 
+        
+        misc = FP + FN        
+        miscp = (misc * 100)/test_len 
+        
         self.Helpers.logger.info("True Positives: " + str(TP) + "(" + str(TPP) + "%)")
         self.Helpers.logger.info("False Positives: " + str(FP) + "(" + str(FPP) + "%)")
         self.Helpers.logger.info("True Negatives: " + str(TN) + "(" + str(TNP) + "%)")
         self.Helpers.logger.info("False Negatives: " + str(FN) + "(" + str(FNP) + "%)")
         
-        specificity = TN/(TN+FP) 
         self.Helpers.logger.info("Specificity: " + str(specificity))
-        
-        misc = FP + FN        
-        miscp = (misc * 100)/test_len 
         self.Helpers.logger.info("Misclassification: " + str(misc) + "(" + str(miscp) + "%)")        
         
     def save_weights(self):
         """ Saves the model weights. """
             
         self.model.save_weights(self.weights_file)  
+        self.Helpers.logger.info("Weights saved " + self.weights_file)
         
     def save_model_as_json(self):
         """ Saves the model to JSON. """
         
         with open(self.model_json, "w") as file:
             file.write(self.model.to_json())
+            
+        self.Helpers.logger.info("Model JSON saved " + self.model_json)
         
-    def load_model_from_json(self):
-        """ Loads the model from JSON. """
+    def load_model_and_weights(self):
+        """ Loads the model and weights. """
         
-        with open(self.model_json, "w") as file:
-            json_model = file.read()
+        with open(self.model_json) as file:
+            m_json = file.read()
         
-        tf.keras.set_learning_phase(0)
-        model = tf.keras.models.model_from_json(json_model) 
-        model.load_weights_model(self.weights_file)
+        self.AllModel = tf.keras.models.model_from_json(m_json) 
+        self.AllModel.load_weights(self.weights_file)
+            
+        self.Helpers.logger.info("Model loaded ")
         
-        model.summary() 
+        self.AllModel.summary() 
+        
+    def test_classifier(self):
+        """ Tests the trained model. """
+        
+        files = 0
+        tp = 0
+        fp = 0
+        tn = 0
+        fn = 0
+
+        rootdir = self.Helpers.confs["cnn"]["data"]["test"]
+        
+        for testFile in os.listdir(rootdir):
+            if os.path.splitext(testFile)[1] in self.Helpers.confs["cnn"]["data"]["valid_types"]:
+
+                files += 1
+                fileName = rootdir + "/" + testFile
+
+                img = cv2.imread(fileName).astype(np.float32)
+                self.Helpers.logger.info("Loaded test image " + fileName)
+
+                dx, dy, dz = img.shape
+                delta = float(abs(dy-dx))
+
+                if dx > dy:
+                    img = img[int(0.5*delta):dx-int(0.5*delta), 0:dy]
+                else:
+                    img = img[0:dx, int(0.5*delta):dy-int(0.5*delta)]
+                    
+                img = cv2.resize(img, (self.Helpers.confs["cnn"]["data"]["dim_augmentation"], 
+                                       self.Helpers.confs["cnn"]["data"]["dim_augmentation"]))
+                dx, dy, dz = img.shape
+                input_data = img.reshape((-1, dx, dy, dz))
+                
+                predictions = self.AllModel.predict_proba(input_data)
+                prediction = predictions[0]
+                prediction  = np.argmax(prediction)
+                prediction  = self.Helpers.confs["cnn"]["data"]["labels"][prediction]
+                
+                msg = ""
+                if prediction == 1 and "_1." in testFile:
+                    tp += 1
+                    msg = "ALL correctly detected (True Positive)"
+                elif prediction == 1 and "_0." in testFile:
+                    fp += 1
+                    msg = "ALL incorrectly detected (False Positive)"
+                elif prediction == 0 and "_0." in testFile:
+                    tn += 1
+                    msg = "ALL correctly not detected (True Negative)"
+                elif prediction == 0 and "_1." in testFile:
+                    fn += 1
+                    msg = "ALL incorrectly not detected (False Negative)"
+                self.Helpers.logger.info(msg)
+                    
+        self.Helpers.logger.info("Images Classifier: " + str(files))
+        self.Helpers.logger.info("True Positives: " + str(tp))
+        self.Helpers.logger.info("False Positives: " + str(fp))
+        self.Helpers.logger.info("True Negatives: " + str(tn))
+        self.Helpers.logger.info("False Negatives: " + str(fn))
