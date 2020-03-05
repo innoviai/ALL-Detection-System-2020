@@ -14,9 +14,9 @@ This project is the classifier that is used in Acute the Lymphoblastic Leukemia 
 
 ## Results
 
-| Training Data | Validation Data | Test Data | Accuracy | Recall | Precision |
-| -------------------- | ----- | ---------- | ---------- | ---------- | ---------- |
-| 2163 |  741 | 20 | | | |
+| Training | Validation | Test | Accuracy | Recall | Precision | AUC/ROC |
+| -------------------- | ----- | ---------- | ---------- | ---------- | ---------- | ---------- |
+| 2163 |  741 | 20 | 0.97840756 | 0.97840756 | 0.97840756 | 0.995607 |
 
 &nbsp;
 
@@ -286,9 +286,6 @@ Here you can find the training results that are shown in console during training
 ```
 
 &nbsp;
-
-
-
 
 # Contributing
 
