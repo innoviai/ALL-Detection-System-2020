@@ -40,6 +40,14 @@ In [Acute Leukemia Classification Using Convolution Neural Network In Clinical D
 
 In this project we will use an augmented dataset with the network proposed in this paper, built using Tensorflow 2.
 
+We will build a Convolutional Neural Network, as shown in Fig 1, consisting of the following 5 layers (missing out the zero padding layers):
+
+- Conv layer (50x50x30)
+- Conv layer (50x50x30)
+- Max-Pooling layer (25x25x30)
+- Fully Connected layer (2 neurons)
+- Softmax layer (Output 2)
+
 &nbsp;
 
 ## Getting Started

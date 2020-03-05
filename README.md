@@ -30,6 +30,18 @@ All other requirements should be included in Setup.sh you can run this file by n
 sh Setup.sh
 ```
 
+## Clone the repository
+
+First of all you should clone the [ALL-IDB Classifiers](https://github.com/AMLResearchProject/ALL-Detection-System-2020 "ALL-IDB Classifiers") repository from the [Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research Project](hhttps://github.com/AMLResearchProject "Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research Project") Github Organization. 
+
+To do this, make sure you have Git installed, navigate to the location you want to clone the repository to on your device using terminal/commandline, and then use the following command:
+
+```
+  $ git clone https://github.com/AMLResearchProject/ALL-Detection-System-2020.git
+```
+
+Once you have used the command above you will see a directory called **ALL-Detection-System-2020** in the location you chose to clone to. In terminal, navigate to the **ALL-Detection-System-2020** directory, this is your project root directory.
+
 ## ALL-IDB
 
 You need to be granted access to use the Acute Lymphoblastic Leukemia Image Database for Image Processing dataset. You can find the application form and information about getting access to the dataset on [this page](https://homes.di.unimi.it/scotti/all/#download) as well as information on how to contribute back to the project [here](https://homes.di.unimi.it/scotti/all/results.php). If you are not able to obtain a copy of the dataset please feel free to try this tutorial on your own dataset, we would be very happy to find additional AML & ALL datasets.
