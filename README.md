@@ -2,7 +2,7 @@
 
 ## Acute Lymphoblastic Leukemia Detection System 2020
 
-[![UPCOMING RELEASE](https://img.shields.io/badge/CURRENT%20DEV%20BRANCH-0.0.1-blue.svg)](https://github.com/AMLResearchProject/ALL-Detection-System-2020/tree/0.0.1)
+[![CURRENT RELEASE](https://img.shields.io/badge/CURRENT%20RELEASE-0.0.1-blue.svg)](https://github.com/AMLResearchProject/ALL-Detection-System-2020/tree/0.0.1) [![UPCOMING RELEASE](https://img.shields.io/badge/CURRENT%20DEV%20BRANCH-0.0.2-blue.svg)](https://github.com/AMLResearchProject/ALL-Detection-System-2020/tree/0.0.2)
 
 ![Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research Project](Media/Images/AllVrCNN.jpg)
 
