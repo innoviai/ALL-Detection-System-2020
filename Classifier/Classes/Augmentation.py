@@ -1,16 +1,16 @@
 ############################################################################################
 #
-# Project:       Peter Moss Leukemia Research Foundation
-# Repository:    ALL-IDB Classifiers
-# Project:       Tensorflow 2.0 ALL Papers
+# Project:       Peter Moss Acute Myeloid & Lymphoblastic Leukemia AI Research Project
+# Repository:    ALL Detection System 2020
+# Project:       ALL Classifier
 #
-# Author:        Adam Milton-Barker (adammiltonbarker@leukemiaresearchfoundation.ai)
+# Author:        Adam Milton-Barker (AdamMiltonBarker.com)
 # Contributors:
-#
-# Title:         Paper 1 Data Augmentation Helper Class
-# Description:   Data augmentation helper class for the Paper 1 Evaluation.
+# Title:         Data Helper Class
+# Description:   Data helper functions for data augmentation used with the
+#                ALL Detection System 2020 (AllDS2020) ALL Classifier.
 # License:       MIT License
-# Last Modified: 2019-12-30
+# Last Modified: 2020-03-05
 #
 ############################################################################################
 
@@ -57,8 +57,6 @@ class Augmentation():
         Exploring novel convolutional network architecture to build a classification 
         system for better assistance in diagonosing Acute Lymphoblastic Leukemia in 
         blood cells.
-
-
         https://github.com/AMLResearchProject/AML-ALL-Classifiers/blob/master/Python/_Keras/QuantisedCode/QuantisedCode.ipynb
         """
 
@@ -110,8 +108,6 @@ class Augmentation():
         Exploring novel convolutional network architecture to build a classification 
         system for better assistance in diagonosing Acute Lymphoblastic Leukemia in 
         blood cells.
-
-
         https://github.com/AMLResearchProject/AML-ALL-Classifiers/blob/master/Python/_Keras/QuantisedCode/QuantisedCode.ipynb
         """
 
