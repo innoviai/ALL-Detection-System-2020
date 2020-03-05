@@ -50,9 +50,146 @@ We will build a Convolutional Neural Network, as shown in Fig 1, consisting of t
 
 &nbsp;
 
-## Getting Started
+# Getting Started
 
 To get started make sure you completed the steps on the [project home README](https://github.com/AMLResearchProject/ALL-Detection-System-2020 "project home README").
+
+&nbsp;
+
+# Configuration
+
+[config.json](hhttps://github.com/AMLResearchProject/ALL-Detection-System-2020/Classifier/Model/config.json "config.json")  holds the configuration for our network. 
+
+```
+{
+    "cnn": {
+        "data": {
+            "dim": 50,
+            "dim_augmentation": 100,
+            "file_type": ".jpg",
+            "rotations_augmentation": 3,
+            "seed_adam": 32,
+            "seed_adam_augmentation": 64,
+            "seed_rmsprop": 3,
+            "seed_rmsprop_augmentation": 6,
+            "split": 0.255,
+            "split_augmentation": 0.3,
+            "train_dir": "Model/Data/ALL-IDB-1"
+        },
+        "train": {
+            "batch": 80,
+            "batch_augmentation": 100,
+            "decay_adam": 1e-6,
+            "decay_rmsprop": 1e-6,
+            "epochs": 150,
+            "epochs_augmentation": 150,
+            "learning_rate_adam": 1e-4,
+            "learning_rate_rmsprop": 1e-4,
+            "val_steps": 10,
+            "val_steps_augmentation": 3
+        }
+    }
+}
+```
+
+We have the cnn object containing two objects, data and train. In data we have the configuration related to preparing the training and validation data. We use a seed to make sure our results are reproducible. In train we have the configuration related to training the model.
+
+Notice that the batch amount is 80, this is equal to the amount of data in the training data meaning that the network will see all samples in the dataset before updating the parameters. This was done to try and reduce the spiking effect in our model's metrics. In my case though, removing it actually made the network perform better.  Other things that can help are batch normalization, more data and dropout etc.
+
+In my case, the configuration above was the best out of my testing, but you may find different configurations work better. Feel free to update these settings to your liking, and please let us know of your experiences.
+
+&nbsp;
+
+# Code structure
+
+The code for this project consists of 4 main Python files and a configuration file:
+
+- [config.json](hhttps://github.com/AMLResearchProject/ALL-Detection-System-2020/Classifier/Model/config.json "config.json"): The configuration file.
+- [AllCnn.py](hhttps://github.com/AMLResearchProject/ALL-Detection-System-2020/Classifier/AllCnn.py "AllCnn.py"): A wrapper class.
+- [Helpers.py](hhttps://github.com/AMLResearchProject/ALL-Detection-System-2020/Classifier/Classes/Helpers.py "Helpers.py"): A helper class.
+- [Data.py](hhttps://github.com/AMLResearchProject/ALL-Detection-System-2020/Classifier/Classes/Data.py "Data.py"): A data helpers class.
+- [Model.py](hhttps://github.com/AMLResearchProject/ALL-Detection-System-2020/Classifier/Classes/Model.py "Model.py"): A model helpers class.
+
+&nbsp;
+
+### Classes 
+
+Our functionality for this network can be found mainly in the **Classes** directory. 
+
+|    Class | Description |
+| ------------- | ------------ |
+| Helpers.py   | [Helpers.py](hhttps://github.com/AMLResearchProject/ALL-Detection-System-2020/Classifier/Classes/Helpers.py "Helpers.py") is a helper class. The class loads the configuration and logging that the project uses.      |
+| Data.py | [Data.py](hhttps://github.com/AMLResearchProject/ALL-Detection-System-2020/Classifier/Classes/Data.py "Data.py") is a data helper class. The class provides the functionality for sorting and preparing your training and validation data.  |     |
+| Model.py | [Model.py](hhttps://github.com/AMLResearchProject/ALL-Detection-System-2020/Classifier/Classes/Model.py "Model.py") is a model helper class. The class provides the functionality for creating our CNN.       |
+
+&nbsp;
+
+### Functions
+
+ The main functions are briefly explained below:
+
+|    Class | Function |  Description |
+| ------------- | ------------ | -------- |
+| Data.py | data_and_labels_sort() | The data_and_labels_sort() function sorts the data into two Python lists, data[] and labels[]. |
+| Data.py | data_and_labels_prepare() | The data_and_labels_prepare() function prepares the data and labels for training. |
+| Data.py | convert_data() | The convert_data() function converts the training data to a numpy array. |
+| Data.py | encode_labels() | The encode_labels() function One Hot Encodes the labels. |
+| Data.py | shuffle() | The shuffle() function shuffles the data helping to eliminate bias. |
+| Data.py | get_split() | The get_split() function splits the prepared data and labels into traiing and validation data. |
+| Model.py | build_network() | The build_network() function creates the network architecture proposed in the [Acute Leukemia Classification Using Convolution Neural Network In Clinical Decision Support System](https://airccj.org/CSCP/vol7/csit77505.pdf "Acute Leukemia Classification Using Convolution Neural Network In Clinical Decision Support System") paper. |
+| Model.py | compile_and_train() | The compile_and_train() function compiles and trains the model proposed in the [Acute Leukemia Classification Using Convolution Neural Network In Clinical Decision Support System](https://airccj.org/CSCP/vol7/csit77505.pdf "Acute Leukemia Classification Using Convolution Neural Network In Clinical Decision Support System") paper. |
+| Model.py | evaluate_model() | The evaluate_model() function evaluates the model, and displays the values for the metrics we specified. |
+
+&nbsp;
+
+## Metrics
+
+We can use metrics to measure the effectiveness of our model. In this network we will use the following metrics:
+
+```
+tf.keras.metrics.BinaryAccuracy(name='accuracy'),
+tf.keras.metrics.Precision(name='precision'),
+tf.keras.metrics.Recall(name='recall'),
+tf.keras.metrics.AUC(name='auc'),
+tf.keras.metrics.TruePositives(name='tp'),
+tf.keras.metrics.FalsePositives(name='fp'),
+tf.keras.metrics.TrueNegatives(name='tn'),
+tf.keras.metrics.FalseNegatives(name='fn') 
+```
+
+These metrics will be displayed and plotted once our model is trained.  A useful tutorial while working on the metrics was the [Classification on imbalanced data](https://www.tensorflow.org/tutorials/structured_data/imbalanced_data) tutorial on Tensorflow's website.
+
+&nbsp;
+
+## Model Summary
+
+Our network matches the architecture proposed in the paper exactly, with exception to the optimizer and loss function as this info was not provided in the paper.
+
+```
+Model: "AllCnn"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+zero_padding2d (ZeroPadding2 (None, 54, 54, 3)         0         
+_________________________________________________________________
+conv2d (Conv2D)              (None, 50, 50, 30)        2280      
+_________________________________________________________________
+zero_padding2d_1 (ZeroPaddin (None, 54, 54, 30)        0         
+_________________________________________________________________
+conv2d_1 (Conv2D)            (None, 50, 50, 30)        22530     
+_________________________________________________________________
+max_pooling2d (MaxPooling2D) (None, 25, 25, 30)        0         
+_________________________________________________________________
+flatten (Flatten)            (None, 18750)             0         
+_________________________________________________________________
+dense (Dense)                (None, 2)                 37502     
+_________________________________________________________________
+activation (Activation)      (None, 2)                 0         
+=================================================================
+Total params: 62,312
+Trainable params: 62,312
+Non-trainable params: 0
+```
 
 &nbsp;
 
