@@ -12,6 +12,40 @@ This project is made up of a number of components which work together as a netwo
 
 &nbsp;
 
+# Getting Started 
+
+To get started there are some things you need to collect:
+
+## Hardware
+
+In this project I used a NVIDIA GTX 1050 ti with Ubuntu 18.04. I will check this code in Windows soon on a GTX 1080 ti. The network has also been tested on Mac/CPU.
+
+## Software
+
+In this project I used Python 3, tensorflow-gpu (2.0). In previous testing I have found differences in the results when using/not using GPU, feel free to let us know of any issues. 
+
+All other requirements should be included in Setup.sh you can run this file by navigating to the Classifiers directory in terminal and using the code below:
+
+```
+sh Setup.sh
+```
+
+## ALL-IDB
+
+You need to be granted access to use the Acute Lymphoblastic Leukemia Image Database for Image Processing dataset. You can find the application form and information about getting access to the dataset on [this page](https://homes.di.unimi.it/scotti/all/#download) as well as information on how to contribute back to the project [here](https://homes.di.unimi.it/scotti/all/results.php). If you are not able to obtain a copy of the dataset please feel free to try this tutorial on your own dataset, we would be very happy to find additional AML & ALL datasets.
+
+### ALL_IDB1 
+
+In this project, [ALL-IDB1](https://homes.di.unimi.it/scotti/all/#datasets) is used, one of the datsets from the Acute Lymphoblastic Leukemia Image Database for Image Processing dataset. We will use data augmentation to increase the amount of training and testing data we have.
+
+"The ALL_IDB1 version 1.0 can be used both for testing segmentation capability of algorithms, as well as the classification systems and image preprocessing methods. This dataset is composed of 108 images collected during September, 2005. It contains about 39000 blood elements, where the lymphocytes has been labeled by expert oncologists. The images are taken with different magnifications of the microscope ranging from 300 to 500."  
+
+&nbsp;
+
+# Build Your Acute Lymphoblastic Leukemia Detection System 2020
+
+Follow the guides below to build your Virtual Reality Acute Lymphoblastic Leukemia Detection System.
+
 | Project                                                                                                                                                                                                                                                                                                                                                                      | Description                                                                                                                         | Status      |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | [Tensorflow 2.0 Classifier](https://github.com/AMLResearchProject/ALL-Detection-System-2020/tree/master/Classifier "Tensorflow 2.0 Classifier") | Applies filters to the original dataset and increases the amount of training / test data. Provides code for training a CNN for detecting ALL. Hosts a REST API endpoint that provides access to the model for inference. | Development    |
@@ -19,6 +53,8 @@ This project is made up of a number of components which work together as a netwo
 | [Virtual Reality (Oculus Rift)](https://github.com/AMLResearchProject/ALL-Detection-System-2020/tree/master/Virtual-Reality "Oculus Rift")                                                                                                                                                                                                                                                             | A virtual room made with Unreal Engine 4. In the room the ALL data is displayed as blocks and the user can point at those blocks to classify the image.                      | Development    |
 
 &nbsp;
+
+
 
 # Contributing
 
