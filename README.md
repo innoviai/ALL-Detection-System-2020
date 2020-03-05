@@ -18,7 +18,7 @@ To get started there are some things you need to collect:
 
 ## Hardware
 
-In this project I used a NVIDIA GTX 1050 ti with Ubuntu 18.04. I will check this code in Windows soon on a GTX 1080 ti.
+In this project I used a NVIDIA GTX 1050 ti with Ubuntu 18.04. I will check this code in Windows soon on a GTX 1080 ti. The network has also been tested on Mac/CPU.
 
 ## Software
 
