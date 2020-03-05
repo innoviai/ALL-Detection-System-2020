@@ -14,9 +14,9 @@ This project is the classifier that is used in Acute the Lymphoblastic Leukemia 
 
 ## Results
 
-| Training Data | Validation Data | Test Data | Accuracy | Recall | Precision |
-| -------------------- | ----- | ---------- | ---------- | ---------- | ---------- |
-| 2163 |  741 | 20 | | | |
+| Training | Validation | Test | Accuracy | Recall | Precision | AUC/ROC |
+| -------------------- | ----- | ---------- | ---------- | ---------- | ---------- | ---------- |
+| 852 |  292 | 20 | 0.9794521 | 0.9794521 | 0.9794521 | 0.9939248 |
 
 &nbsp;
 
@@ -66,33 +66,32 @@ To get started make sure you completed the steps on the [project home README](ht
 
 # Data
 
-Once you have your data you need to add it to the project filesystem. You will notice the data folder in the Model directory, **Model/Data**, inside you have two folders, **ALL-IDB-1** & **Test**. 
+Once you have your data you need to add it to the project filesystem. You will notice the data folder in the Model directory, **Model/Data**, inside you have **ALL-IDB-1** & inside there you have **Test**. 
 
-If you are using data augmentation, which this tutorial assumes, first take ten positive and ten negative samples and place them in the **Model/Data/Test** directory. This will be used by our Oculus Rift application and our testing purposes. In my case I used:
+If you are using data augmentation, which this tutorial assumes, first take ten positive and ten negative samples and place them in the **Model/Data/ALL-IDB-1/Test** directory. This will be used by our Oculus Rift application and our testing purposes. In my case I used:
 
-- im001_1.jpg
-- im004_1.jpg
-- im007_1.jpg
-- im0011_1.jpg
-- im0015_1.jpg
-- im0018_1.jpg
-- im0022_1.jpg
-- im0026_1.jpg
-- im0030_1.jpg
-- im0033_1.jpg
-- im0034_0.jpg
-- im0037_0.jpg
-- im0039_0.jpg
-- im0042_0.jpg
-- im0046_0.jpg
-- im0065_0.jpg
-- im0068_0.jpg
-- im0076_0.jpg
-- im0080_0.jpg
+- im006_1.jpg
+- im020_1.jpg
+- im024_1.jpg
+- im026_1.jpg
+- im028_1.jpg
+- im031_1.jpg
+- im035_0.jpg
+- im041_0.jpg
+- im047_0.jpg
+- im053_1.jpg
+- im057_1.jpg
+- im060_1.jpg
+- im063_1.jpg
+- im069_0.jpg
+- im074_0.jpg
+- im088_0.jpg
+- im095_0.jpg
+- im099_0.jpg
+- im101_0.jpg
+- im106_0.jpg
 
 Next add the remaining 88 images to the **ALL-IDB-1** folder. The test images used in the demo will not be augmented, which I believe would be the case in a real world scenario.
-
-Doing so decreased the metrics considerably, dropping from 97% to 95%, and an increased amount of false negatives. Increasing the amount of augmentation rotations per sample helped improve the model, but also increased false negatives.
 
 &nbsp;
 
@@ -145,18 +144,39 @@ Our functionality for this network can be found mainly in the **Classes** direct
 ```
 {
     "cnn": {
+        "api": {
+            "server": "Model/model.js"
+        },
+        "model": {
+            "model": "Model/model.json",
+            "model_aug": "Model/model_augmentation.json",
+            "weights": "Model/weights.h5",
+            "weights_aug": "Model/weights_augmentation.h5"
+        },
         "data": {
             "dim": 50,
             "dim_augmentation": 100,
             "file_type": ".jpg",
-            "rotations_augmentation": 25,
+            "labels": [0,1],
+            "rotations_augmentation": 5,
             "seed_adam": 32,
-            "seed_adam_augmentation": 64,
+            "seed_adam_augmentation": 32,
             "seed_rmsprop": 3,
             "seed_rmsprop_augmentation": 6,
             "split": 0.255,
             "split_augmentation": 0.3,
-            "train_dir": "Model/Data/ALL-IDB-1"
+            "test": "Model/Data/ALL-IDB-1/Test",
+            "train_dir": "Model/Data/ALL-IDB-1",
+            "valid_types": [
+              ".JPG",
+              ".JPEG",
+              ".PNG",
+              ".GIF",
+              ".jpg",
+              ".jpeg",
+              ".png",
+              ".gif"
+            ]
         },
         "train": {
             "batch": 80,
@@ -214,17 +234,17 @@ This tells the classifier to start in Train mode, use the Adam optimizer, and to
 First the data will be prepared.
 
 ```
-2020-03-05 12:26:43,952 - Data - INFO - All data: 88
-2020-03-05 12:26:43,952 - Data - INFO - Positive data: 39
-2020-03-05 12:26:43,952 - Data - INFO - Negative data: 49
-2020-03-05 12:26:50,932 - Data - INFO - Data shape: (2904, 100, 100, 3)
-2020-03-05 12:26:50,934 - Data - INFO - Labels shape: (2904, 2)
-2020-03-05 12:26:50,934 - Data - INFO - Augmented data: (2904, 100, 100, 3)
-2020-03-05 12:26:50,934 - Data - INFO - All Labels: (2904, 2)
-2020-03-05 12:26:51,627 - Data - INFO - Training data: (2163, 100, 100, 3)
-2020-03-05 12:26:51,627 - Data - INFO - Training labels: (2163, 2)
-2020-03-05 12:26:51,627 - Data - INFO - Validation data: (741, 100, 100, 3)
-2020-03-05 12:26:51,627 - Data - INFO - Validation labels: (741, 2)
+2020-03-05 21:03:35,817 - Data - INFO - All data: 88
+2020-03-05 21:03:35,817 - Data - INFO - Positive data: 39
+2020-03-05 21:03:35,817 - Data - INFO - Negative data: 49
+2020-03-05 21:03:40,155 - Data - INFO - Data shape: (1144, 100, 100, 3)
+2020-03-05 21:03:40,157 - Data - INFO - Labels shape: (1144, 2)
+2020-03-05 21:03:40,157 - Data - INFO - Augmented data: (1144, 100, 100, 3)
+2020-03-05 21:03:40,157 - Data - INFO - All Labels: (1144, 2)
+2020-03-05 21:03:40,684 - Data - INFO - Training data: (852, 100, 100, 3)
+2020-03-05 21:03:40,684 - Data - INFO - Training labels: (852, 2)
+2020-03-05 21:03:40,684 - Data - INFO - Validation data: (292, 100, 100, 3)
+2020-03-05 21:03:40,684 - Data - INFO - Validation labels: (292, 2)
 ```
 
 ### Model Summary
@@ -257,38 +277,129 @@ activation (Activation)      (None, 2)                 0
 Total params: 174,812
 Trainable params: 174,812
 Non-trainable params: 0
+
+Train on 852 samples, validate on 292 samples
 ```
 
-## Metics
+## Training Results
 
-<img src="Media/Images/Metrics.png" alt="Adam Optimizer Results" />
+Below are the training results for 150 epochs.
 
-_Fig 2. Ubuntu/GTX 1050 ti Adam Optimizer Results_
+<img src="Model/Plots/Accuracy.png" alt="Adam Optimizer Results" />
 
-Here you can find the training results that are shown in console during training.
+_Fig 2. Ubuntu/GTX 1050 ti Accuracy_
+
+<img src="Model/Plots/Loss.png" alt="Ubuntu/GTX 1050 ti Loss" />
+
+_Fig 3. Ubuntu/GTX 1050 ti Loss_
+
+<img src="Model/Plots/Precision.png" alt="Ubuntu/GTX 1050 ti Precision" />
+
+_Fig 4. Ubuntu/GTX 1050 ti Precision_
+
+<img src="Model/Plots/Recall.png" alt="Ubuntu/GTX 1050 ti Recall" />
+
+_Fig 5. Ubuntu/GTX 1050 ti Recall_
+
+<img src="Model/Plots/AUC.png" alt="Ubuntu/GTX 1050 ti AUC" />
+
+_Fig 6. Ubuntu/GTX 1050 ti AUC_
 
 ```
-2020-03-05 12:43:03,292 - Model - INFO - Metrics: loss 0.0797744454733032
-2020-03-05 12:43:03,293 - Model - INFO - Metrics: acc 0.97840756
-2020-03-05 12:43:03,293 - Model - INFO - Metrics: precision 0.97840756
-2020-03-05 12:43:03,293 - Model - INFO - Metrics: recall 0.97840756
-2020-03-05 12:43:03,293 - Model - INFO - Metrics: auc 0.995607
+2020-03-05 21:09:05,268 - Model - INFO - Metrics: loss 0.10147356269370815
+2020-03-05 21:09:05,268 - Model - INFO - Metrics: acc 0.9794521
+2020-03-05 21:09:05,268 - Model - INFO - Metrics: precision 0.9794521
+2020-03-05 21:09:05,268 - Model - INFO - Metrics: recall 0.9794521
+2020-03-05 21:09:05,268 - Model - INFO - Metrics: auc 0.9939248
 
-2020-03-05 12:43:03,607 - Model - INFO - Confusion Matrix: [[395   0]
- [ 16 330]]
+2020-03-05 21:09:12,757 - Model - INFO - Confusion Matrix: [[160   0]
+ [  6 126]]
 
-2020-03-05 12:47:07,458 - Model - INFO - True Positives: 330(44.534412955465584%)
-2020-03-05 12:47:07,504 - Model - INFO - False Positives: 0(0.0%)
-2020-03-05 12:47:07,504 - Model - INFO - True Negatives: 395(53.30634278002699%)
-2020-03-05 12:47:07,505 - Model - INFO - False Negatives: 16(2.1592442645074224%)
-2020-03-05 12:47:07,505 - Model - INFO - Specificity: 1.0
-2020-03-05 12:47:07,505 - Model - INFO - Misclassification: 16(2.1592442645074224%)
+2020-03-05 21:09:15,365 - Model - INFO - True Positives: 126(43.15068493150685%)
+2020-03-05 21:09:15,365 - Model - INFO - False Positives: 0(0.0%)
+2020-03-05 21:09:15,365 - Model - INFO - True Negatives: 160(54.794520547945204%)
+2020-03-05 21:09:15,365 - Model - INFO - False Negatives: 6(2.0547945205479454%)
+2020-03-05 21:09:15,365 - Model - INFO - Specificity: 1.0
+2020-03-05 21:09:15,365 - Model - INFO - Misclassification: 6(2.0547945205479454%)
 ```
+
+| Accuracy | Recall | Precision | AUC/ROC |
+| ---------- | ---------- | ---------- | ---------- |
+| 0.9794521 | 0.9794521 | 0.9794521 | 0.9939248 |
+
+## Overall Results
+
+| Figures of merit     | Amount/Value | Percentage |
+| -------------------- | ----- | ---------- |
+| True Positives       | 126 | 43.15068493150685% |
+| False Positives      | 0 | 0.0% |
+| True Negatives       | 160 | 54.794520547945204% |
+| False Negatives      | 6 | 2.0547945205479454% |
+| Misclassification    | 6 | 2.0547945205479454% |
+| Sensitivity / Recall | 0.9794521   | 0.98% |
+| Specificity          | 1.0  | 100% |
 
 &nbsp;
 
+# Live Testing
 
+Now we will use the test data to see how the classifier reacts to our testing data. Real world testing, as I like to call it, is the most crucial testing I believe, as it allows you to see the model in a real world environment. 
 
+This part of the system will use the test data from the **Model/Data/Test** directory. The command to start testing locally is as follows:
+
+```
+python3 AllDS2020.py Classify Adam  True
+```
+
+## Output/Results
+
+```
+2020-03-05 20:56:17,227 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im060_1.jpg
+2020-03-05 20:56:18,048 - Model - INFO - ALL correctly detected (True Positive)
+2020-03-05 20:56:18,122 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im047_0.jpg
+2020-03-05 20:56:18,125 - Model - INFO - ALL correctly not detected (True Negative)
+2020-03-05 20:56:18,197 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im057_1.jpg
+2020-03-05 20:56:18,201 - Model - INFO - ALL correctly detected (True Positive)
+2020-03-05 20:56:18,230 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im026_1.jpg
+2020-03-05 20:56:18,233 - Model - INFO - ALL correctly detected (True Positive)
+2020-03-05 20:56:18,297 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im041_0.jpg
+2020-03-05 20:56:18,301 - Model - INFO - ALL correctly not detected (True Negative)
+2020-03-05 20:56:18,329 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im020_1.jpg
+2020-03-05 20:56:18,332 - Model - INFO - ALL correctly detected (True Positive)
+2020-03-05 20:56:18,396 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im053_1.jpg
+2020-03-05 20:56:18,400 - Model - INFO - ALL correctly detected (True Positive)
+2020-03-05 20:56:18,462 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im101_0.jpg
+2020-03-05 20:56:18,466 - Model - INFO - ALL correctly not detected (True Negative)
+2020-03-05 20:56:18,498 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im028_1.jpg
+2020-03-05 20:56:18,502 - Model - INFO - ALL correctly detected (True Positive)
+2020-03-05 20:56:18,566 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im069_0.jpg
+2020-03-05 20:56:18,570 - Model - INFO - ALL correctly not detected (True Negative)
+2020-03-05 20:56:18,629 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im095_0.jpg
+2020-03-05 20:56:18,633 - Model - INFO - ALL incorrectly detected (False Positive)
+2020-03-05 20:56:18,665 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im024_1.jpg
+2020-03-05 20:56:18,668 - Model - INFO - ALL correctly detected (True Positive)
+2020-03-05 20:56:18,736 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im088_0.jpg
+2020-03-05 20:56:18,740 - Model - INFO - ALL incorrectly detected (False Positive)
+2020-03-05 20:56:18,807 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im035_0.jpg
+2020-03-05 20:56:18,811 - Model - INFO - ALL correctly not detected (True Negative)
+2020-03-05 20:56:18,842 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im006_1.jpg
+2020-03-05 20:56:18,845 - Model - INFO - ALL correctly detected (True Positive)
+2020-03-05 20:56:18,910 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im074_0.jpg
+2020-03-05 20:56:18,914 - Model - INFO - ALL correctly not detected (True Negative)
+2020-03-05 20:56:18,975 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im099_0.jpg
+2020-03-05 20:56:18,980 - Model - INFO - ALL correctly not detected (True Negative)
+2020-03-05 20:56:19,045 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im063_1.jpg
+2020-03-05 20:56:19,049 - Model - INFO - ALL correctly detected (True Positive)
+2020-03-05 20:56:19,110 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im106_0.jpg
+2020-03-05 20:56:19,114 - Model - INFO - ALL correctly not detected (True Negative)
+2020-03-05 20:56:19,141 - Model - INFO - Loaded test image Model/Data/ALL-IDB-1/Test/Im031_1.jpg
+2020-03-05 20:56:19,144 - Model - INFO - ALL incorrectly not detected (False Negative)
+2020-03-05 20:56:19,145 - Model - INFO - Images Classifier: 20
+2020-03-05 20:56:19,145 - Model - INFO - True Positives: 9
+2020-03-05 20:56:19,145 - Model - INFO - False Positives: 2
+2020-03-05 20:56:19,145 - Model - INFO - True Negatives: 8
+2020-03-05 20:56:19,145 - Model - INFO - False Negatives: 1
+```
 
 # Contributing
 

@@ -15,6 +15,8 @@
 
 import sys
 
+from flask import Flask, request, Response
+
 from Classes.Helpers import Helpers
 from Classes.Data import Data as Data
 from Classes.Model import Model as Model
@@ -57,11 +59,10 @@ class AllDS2020():
         https://airccj.org/CSCP/vol7/csit77505.pdf
         """
 
-        self.Model = Model(self.Data.X_train, self.Data.X_test, 
-                           self.Data.y_train, self.Data.y_test, 
-                           self.optimizer, self.do_augmentation)
+        self.Model = Model(self.optimizer, self.do_augmentation)
         
-        self.Model.build_network()
+        self.Model.build_network(self.Data.X_train, self.Data.X_test, 
+                           self.Data.y_train, self.Data.y_test)
         self.Model.compile_and_train()
         
         self.Model.save_model_as_json()
@@ -75,21 +76,26 @@ class AllDS2020():
 
     def do_metrics(self):
         """ Predictions & Evaluation """
-        self.Model.plot_metrics()
+        self.Model.visualize_metrics()
         
         self.Model.confusion_matrix()
         self.Model.figures_of_merit()
-
+        
+    def do_classify(self):
+        """ Loads model and classifies test data """
+        
+        self.Model = Model(self.optimizer, self.do_augmentation)
+        self.Model.load_model_and_weights()
+        self.Model.test_classifier()
 
 AllDS2020 = AllDS2020()
 
-
 def main():
     
-    server = sys.argv[2].lower()
+    optimizer = sys.argv[2].lower()
     
-    if server == "adam" or server == "rmsprop":
-        AllDS2020.optimizer = server
+    if optimizer == "adam" or optimizer == "rmsprop":
+        AllDS2020.optimizer = optimizer
     else:
         print("Optimizer not supported")
         exit()
@@ -105,28 +111,33 @@ def main():
     else:
         AllDS2020.do_augmentation = False
         
-    AllDS2020.do_data()
-        
     if AllDS2020.mode == "Train":
         """ Creates and trains the classifier """
         
+        AllDS2020.do_data()
         AllDS2020.do_model()
         AllDS2020.do_evaluate()
         AllDS2020.do_metrics()
         
-    if AllDS2020.mode == "Server":
+    elif AllDS2020.mode == "Classify":
+        """ Runs the classifier locally
+        
+        Runs the classifier in local mode."""
+        
+        AllDS2020.do_classify()
+        
+    elif AllDS2020.mode == "Server":
         """ Runs the classifier in server mode
         
         Runs the classifier in server mode and provides 
         an endpoint, exposing the classifier."""
         
-        print("Not implemented")
-        exit()
-        
-    if AllDS2020.mode == "Classify":
-        """ Runs the classifier locally
-        
-        Runs the classifier in local mode."""
+        app = Flask(__name__)
+
+        @app.route('/Inference', methods=['POST'])
+        def Inference():
+            
+            return Response(response="OK", status=200, mimetype="application/json")
         
         print("Not implemented")
         exit()
